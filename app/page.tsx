@@ -93,7 +93,7 @@ export default function Home() {
       title: 'Last Update',
       dataIndex: 'ts',
       key: 'ts',
-      render: (val) => {
+      render: (val: any) => {
         const utcString = val;
         const localTime = new Date(utcString).toLocaleString();
         return (
