@@ -22,7 +22,7 @@ export default function Home() {
       title: 'Symbol',
       dataIndex: 'symbol',
       key: 'symbol',
-      render: (val) => {
+      render: (val: any) => {
         console.log("val", val)
         let name = "";
         switch (val) {
