@@ -13,6 +13,8 @@ export default function Home() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  console.log("data ", data);
+
   useEffect(() => {
     const ac = new AbortController();
     const symbols = ['XRP/USD', 'BTC/USD', 'ETH/USD'];
