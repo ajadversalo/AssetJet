@@ -73,7 +73,7 @@ export default function Home() {
       title: 'Action',
       dataIndex: 'action',
       key: 'action',
-      render: (val) => (
+      render: (val: any) => (
         <div>
           {val?.toUpperCase()}
         </div>
@@ -83,7 +83,7 @@ export default function Home() {
       title: 'Signals',
       dataIndex: 'signals',
       key: 'signals',
-      render: (val, record) => (
+      render: (val: any) => (
         <div>
           {val?.[0]}
         </div>
