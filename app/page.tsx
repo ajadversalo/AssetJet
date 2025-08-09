@@ -74,7 +74,7 @@ export default function Home() {
     const ac = new AbortController();
     const symbols = ['ADA/USD', 'BTC/USD', 'DOGE/USD', 'ETH/USD', 'SHIB/USD', 'SOL/USD', 'USDC/USD', 'XRP/USD'];
     const qs = new URLSearchParams({ symbols: symbols.join(',') }).toString();
-
+    console.log("fetching");
     (async () => {
       try {
         setLoading(true);
