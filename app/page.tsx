@@ -84,6 +84,7 @@ export default function Home() {
         });
         if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
         const json = await res.json();
+        console.log("result ", json);
         // If your API returns { data: [...] }, switch to: const arr = json.data ?? [];
         const arr = Array.isArray(json) ? json : [];
         setData(arr as LastActivity[]);
