@@ -107,7 +107,7 @@ export default function Home() {
 
   useEffect(() => {
     const ac = new AbortController();
-    const symbols = ['XRP/USD', 'BTC/USD', 'ETH/USD', 'SOL/USD'];
+    const symbols = ['ADA/USD', 'BTC/USD', 'DOGE/USD', 'ETH/USD', 'SHIB/USD', 'SOL/USD', 'USDC/USD', 'XRP/USD', ];
     const qs = new URLSearchParams({ symbols: symbols.join(',') }).toString();
 
     (async () => {
