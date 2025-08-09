@@ -78,7 +78,7 @@ export default function Home() {
     (async () => {
       try {
         setLoading(true);
-        const res = await fetch(`/api/last-activity?${qs}`, {
+        const res = await fetch(`/api/last-activity?${qs}&_t=${Date.now()}`, {
           signal: ac.signal,
           cache: 'no-store',
         });
