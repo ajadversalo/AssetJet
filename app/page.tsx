@@ -1,13 +1,24 @@
 ﻿'use client';
 import { useEffect, useState } from 'react';
-import { Table } from "antd";
+import { Table } from 'antd';
 
 type LastActivity = {
   symbol: string;
   price: number;
   action?: string | null;
   signals?: string[] | null;
-  ts?: string[] | null;
+  ts?: string | null; // ← treat as single ISO string
+};
+
+const COIN_IMAGE: Record<string, string> = {
+  'BTC/USD': 'bitcoin',
+  'ETH/USD': 'ethereum', // ← fixed spelling
+  'XRP/USD': 'xrp',
+  'ADA/USD': 'ada',
+  'DOGE/USD': 'doge',
+  'SOL/USD': 'sol',
+  'USDC/USD': 'usdc',
+  'SHIB/USD': 'shib',
 };
 
 export default function Home() {
@@ -15,99 +26,53 @@ export default function Home() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  console.log("data ", data);
-
   const columns = [
     {
-      title: 'Symbol',
+      title: 'Coin',
       dataIndex: 'symbol',
-      key: 'symbol',
-      render: (val: any) => {
-        console.log("val", val)
-        let name = "";
-        switch (val) {
-          case "BTC/USD":
-            name = "bitcoin";
-            break;
-          case "ETH/USD":
-            name = "etherium";
-            break;
-          case "XRP/USD":
-            name = "xrp";
-            break;
-          case "ADA/USD":
-            name = "ada";
-            break;
-          case "DOGE/USD":
-            name = "doge";
-            break;
-          case "SOL/USD":
-            name = "sol";
-            break;
-          case "USDC/USD":
-            name = "usdc";
-            break;
-          default:
-            break;
-        }
-        return (
-          <div>
-            {name &&
-              <img src={`/${name}.png`} alt={name} width={32} height={32} />
-            }
-          </div>
-        )
-      }
+      key: 'coin',
+      render: (val: string) => {
+        const name = COIN_IMAGE[val];
+        return name ? <img src={`/${name}.png`} alt={name} width={32} height={32} /> : null;
+      },
     },
     {
       title: 'Symbol',
       dataIndex: 'symbol',
-      key: 'symbol',
+      key: 'symbol-col',
     },
     {
       title: 'Price',
       dataIndex: 'price',
-      key: 'price'
+      key: 'price',
     },
     {
       title: 'Action',
       dataIndex: 'action',
       key: 'action',
-      render: (val: any) => (
-        <div>
-          {val?.toUpperCase()}
-        </div>
-      )
+      render: (val?: string | null) => <div>{val?.toUpperCase() || ''}</div>,
     },
     {
       title: 'Signals',
       dataIndex: 'signals',
       key: 'signals',
-      render: (val: any) => (
-        <div>
-          {val?.[0]}
-        </div>
-      )
+      render: (val?: string[] | null) => <div>{Array.isArray(val) ? val.join(', ') : ''}</div>,
     },
     {
       title: 'Last Update',
       dataIndex: 'ts',
       key: 'ts',
-      render: (val: any) => {
-        const utcString = val;
-        const localTime = new Date(utcString).toLocaleString();
-        return (
-          <div>
-            {localTime}
-          </div>
-        )
-      }
+      render: (val?: string | null) => {
+        if (!val) return null;
+        const localTime = new Date(val).toLocaleString();
+        return <div>{localTime}</div>;
+      },
     },
   ];
 
   useEffect(() => {
     const ac = new AbortController();
-    const symbols = ['ADA/USD', 'BTC/USD', 'DOGE/USD', 'ETH/USD', 'SHIB/USD', 'SOL/USD', 'USDC/USD', 'XRP/USD', ];
+    const symbols = ['ADA/USD', 'BTC/USD', 'DOGE/USD', 'ETH/USD', 'SHIB/USD', 'SOL/USD', 'USDC/USD', 'XRP/USD'];
     const qs = new URLSearchParams({ symbols: symbols.join(',') }).toString();
 
     (async () => {
@@ -118,9 +83,8 @@ export default function Home() {
           cache: 'no-store',
         });
         if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
-
-        const json: unknown = await res.json();
-        // If your API returns { data: [...] }, change the next line accordingly:
+        const json = await res.json();
+        // If your API returns { data: [...] }, switch to: const arr = json.data ?? [];
         const arr = Array.isArray(json) ? json : [];
         setData(arr as LastActivity[]);
       } catch (e: any) {
@@ -140,8 +104,9 @@ export default function Home() {
     <main className="p-4 h-[100vh] flex justify-center items-center">
       <div className="w-[90%]">
         <Table
+          rowKey="symbol"            // ← important
           dataSource={data}
-          columns={columns}
+          columns={columns as any}   // or type ColumnsType<LastActivity>
           pagination={false}
         />
       </div>
